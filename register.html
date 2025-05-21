@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Langganan Update Terbaru</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #FF7E5F, #FEB47B, #6A82FB, #FC5C7D);
+      background-size: 400% 400%;
+      animation: animate 5s infinite alternate;
+      text-align: center;
+    }
+
+    .subscribe-form {
+      background: #ffffffcc;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #222;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #f9f9f9;
+    }
+
+    button {
+      background-color: #6A82FB;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #4e63d6;
+    }
+
+    @keyframes animate {
+      0% {
+        background-position: 0% 60%;
+      }
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="subscribe-form">
+    <h1>Jangan Ketinggalan Update!</h1>
+    <p>Masukkan email Anda untuk mendapatkan update terbaru dari aplikasi kami.</p>
+    <div class="form-group">
+      <input type="text" id="name" placeholder="Nama Anda" />
+    </div>
+    <div class="form-group">
+      <input type="email" id="email" placeholder="email@example.com" />
+    </div>
+    <div class="form-group">
+      <button onclick="subscribe();">Langganan Sekarang</button>
+    </div>
+    <p>tunggu hingga muncul pesan di sini.<b/>lalu mulai dengan klik Mulai Menonton di bawah ini</p>
+  </div>
+
+  <script>
+    function subscribe() {
+      emailjs.init("yHp6NNWn_P6pny19J"); // Ganti dengan API key milikmu
+
+      const params = {
+        subject: document.getElementById("name").value,
+        message: document.getElementById("email").value
+      };
+
+      const serviceID = "service_kdkzua8"; // Ganti dengan service ID kamu
+      const templateID = "template_krz8o1b"; // Ganti dengan template ID kamu
+
+      emailjs.send(serviceID, templateID, params)
+        .then(response => {
+          alert("Terima kasih! Kamu sekarang akan menerima update terbaru.");
+          console.log("SUCCESS!", response);
+        })
+        .catch(error => {
+          alert("Gagal mendaftar. Silakan coba lagi nanti.");
+          console.error("ERROR:", error);
+        });
+    }
+  </script>
+</body>
+</html>

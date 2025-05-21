@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laporan Bug Aplikasi</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;margin: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(-45deg,#ec6ead, #3494e6, #6000fb, #f7941e);
+    background-size: 400% 400%;
+    animation: animate 2s infinite alternate;
+    text-align: center;
+      
+    }
+
+    .contact-form {
+      background: #ffffff80;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #f9f9f9;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #357ab8;
+    }
+    
+    @keyframes animate {
+    0% {
+        background-position: 0% 60%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+  </style>
+</head>
+<body>
+  <div class="contact-form">
+    <h1>Laporan Bug Aplikasi</h1>
+    <div class="form-group">
+      <label for="name">Nama</label>
+      <input type="text" id="name" placeholder="Nama Anda" />
+    </div>
+    <div class="form-group">
+      <label for="email">Email Anda</label>
+      <input type="email" id="email" placeholder="email@example.com" />
+    </div>
+    <div class="form-group">
+      <label for="subject">Aplikasi yang Bug</label>
+      <input type="text" id="subject" placeholder="Contoh: Yt Lite" />
+    </div>
+    <div class="form-group">
+      <label for="message">Deskripsi Bug</label>
+      <textarea id="message" rows="5" placeholder="Jelaskan bug yang terjadi..."></textarea>
+    </div>
+    <div class="form-group">
+      <button onclick="sendMessage();">Kirim Laporan</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      emailjs.init("yHp6NNWn_P6pny19J"); // Ganti dengan API key milikmu
+
+      const params = {
+        sendername: document.getElementById("name").value,
+        senderemail: document.getElementById("email").value,
+        subject: document.getElementById("subject").value,
+        message: document.getElementById("message").value
+      };
+
+      const serviceID = "service_kdkzua8"; // Ganti dengan service ID kamu
+      const templateID = "template_krz8o1b"; // Ganti dengan template ID kamu
+
+      emailjs.send(serviceID, templateID, params)
+        .then(response => {
+          alert("Terima kasih, laporan bug Anda telah dikirim!");
+          console.log("SUCCESS!", response);
+        })
+        .catch(error => {
+          alert("Gagal mengirim. Coba lagi nanti.");
+          console.error("ERROR:", error);
+        });
+    }
+  </script>
+</body>
+</html>
