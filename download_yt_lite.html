@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virus Edukasi - APK Download</title>
+    <style>
+        :root {
+            --primary: #25D366;
+            --secondary: #128C7E;
+            --dark: #075E54;
+            --light: #DCF8C6;
+            --text: #333333;
+            --gray: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: white;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        .app-header {
+            background-color: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        /* App Info Section */
+        .app-info {
+            display: flex;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 25px;
+            background-color: var(--gray);
+            margin-right: 25px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .app-details {
+            flex: 1;
+        }
+        
+        .app-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .app-developer {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .app-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stars {
+            color: #FFC107;
+            margin-right: 10px;
+        }
+        
+        .download-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--dark);
+        }
+        
+        /* Screenshots */
+        .screenshots {
+            padding: 25px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .screenshot-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+        }
+        
+        .screenshot {
+            height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Description */
+        .description {
+            padding: 25px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        /* Additional Info */
+        .additional-info {
+            display: flex;
+            padding: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .info-column {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+        }
+        
+        .info-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: 500;
+        }
+        
+        /* Versions */
+        .versions {
+            padding: 25px 0;
+        }
+        
+        .version-card {
+            background-color: var(--gray);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .version-name {
+            font-weight: 500;
+        }
+        
+        .version-date {
+            color: #666;
+        }
+        
+        .version-download {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-info {
+                flex-direction: column;
+            }
+            
+            .app-icon {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="container">
+            <div class="logo">DaraXz-IOTDev</div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <!-- App Info Section -->
+        <section class="app-info">
+            <div class="app-icon">
+                <!-- App icon would go here -->
+                <img src="logo.png" alt="App Icon" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div class="app-details">
+                <h1 class="app-title">Yt Lite</h1>
+                <div class="app-developer">by DaraXz-IOTDev</div>
+                <div class="app-rating">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span>4.5 (di rekomendasikan oleh Ahli)</span>
+                </div>
+                <p>Yt Lite adalah Aplikasi YouTube yang di perkecil ukuran serta fitur sehingga android lawas dapat menonton YouTube.</p>
+                <a href="Yt Lite.apk" download="Yt Lite.apk" class="download-btn">Download APK (v5.0, 7,34 MB)</a>
+            </div>
+        </section>
+        
+        <!-- Screenshots -->
+        <section class="screenshots">
+            <h2 class="section-title">Screenshots</h2>
+            <div class="screenshot-container">
+                <img src="ss1.jpg" alt="Screenshot 1" class="screenshot">
+                <img src="ss2.jpg" alt="Screenshot 2" class="screenshot">
+                <img src="ss3.jpg" alt="Screenshot 3" class="screenshot">
+            </div>
+        </section>
+        
+        <!-- Description -->
+        <section class="description">
+            <h2 class="section-title">About this app</h2>
+            <div class="app-description">
+                <p><strong>Yt Lite</strong> Yt Lite adalah aplikasi YouTube yang di perkecil ukuran serta fitur karena Yt lite berbasis web bukan aplikasi resmi dari perusahaan Google LLC. Yt Lite ini tidak bisa mendownload video seperti di YouTube pada umumnya serta tidak bisa di buka ketika anda offline karena apa? Karena Yt Lite adalah aplikasi YouTube yang di perkecil ukuran serta fitur sehingga lebih cepat dan bisa di seluruh android dan memang di khususkan untuk android 8 ke bawah agar dapat menonton YouTube Terimakasih.</p>
+                
+                <p><strong>Features:</strong></p>
+                <ul style="margin-left: 20px; margin-bottom: 15px;">
+                    <li>Realistic mirip seperti YouTube pada umumnya</li>
+                    <li>Lebih ringan</li>
+                    <li>tidak ada virus sudah di tes</li>
+                    <li>Easy to uninstall</li>
+                    <li>Built with Sketchware Pro</li>
+                </ul>
+                
+            </div>
+        </section>
+        
+        <!-- Additional Info -->
+        <section class="additional-info">
+            <div class="info-column">
+                <div class="info-item">
+                  <div class="info-label">Release</div>
+                    <div class="info-value">20 April, 2025</div>
+                    <div class="info-label">Updated</div>
+                    <div class="info-value">22 Mei, 2025</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Version</div>
+                    <div class="info-value">5.0</div>
+                    <div class="info-label">version code</div>
+                    <div class="info-value">2</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Requirements</div>
+                    <div class="info-value">Android 4.4+</div>
+                </div>
+            </div>
+            <div class="info-column">
+                <div class="info-item">
+                    <div class="info-label">Size</div>
+                    <div class="info-value">5.2 MB</div>
+                </div>
+               
+            </div>
+            <div class="info-column">
+                <div class="info-item">
+                    <div class="info-label">Interactive Elements</div>
+                    <div class="info-value">Users Interact</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">In-app Products</div>
+                    <div class="info-value">No</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Permissions</div>
+                    <div class="info-value">None</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Versions -->
+
+    </main>
+</body>
+</html>
