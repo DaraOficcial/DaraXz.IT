@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avince School Project – Cari Tim Developer Godot</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #141e30, #243b55);
+            color: #f0f0f0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            padding: 60px 20px 20px;
+        }
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #4caf50;
+        }
+        header p {
+            font-size: 1.2em;
+            max-width: 700px;
+            margin: auto;
+        }
+        section {
+            flex: 1;
+            padding: 40px 20px;
+        }
+        h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            max-width: 500px;
+            margin: auto;
+            text-align: left;
+        }
+        li {
+            margin: 10px 0;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+        li:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.2);
+        }
+        .cta-button {
+            background: #4caf50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 30px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        .cta-button:hover {
+            background: #45a049;
+        }
+        footer {
+            padding: 20px;
+            font-size: 0.9em;
+            background: rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎮 Avince School Project 🎮</h1>
+        <p>Hai, gue Indra, anak SMP yang punya ide bikin game 3D sekolah mirip Bully dengan cita rasa Indonesia. Gue cari teman-teman developer Godot buat bikin project bareng tanpa bayaran dulu — nanti kalau rilis di Steam & Play Store, kita bagi hasil!</p>
+    </header>
+    <section>
+        <h2>✨ Siapa yang Gue Cari?</h2>
+        <ul>
+            <li>✅ Programmer Godot (GDScript/C#)</li>
+            <li>✅ 3D Artist (Low-Poly Style)</li>
+            <li>✅ Animator</li>
+            <li>✅ Sound Designer (Optional)</li>
+        </ul>
+        <a class="cta-button" href="mailto: darastoreof@gmail.com">Gabung Sekarang!</a>
+    </section>
+    <footer>
+        © 2025 Avince School Team DaraSy Games</footer>
+</body>
+</html>
