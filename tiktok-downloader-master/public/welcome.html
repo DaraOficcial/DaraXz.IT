@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - TikTok Downloads by DaraXz</title>
+    <style>
+        /* CSS untuk Tema Dark Modern dan Responsiveness */
+
+        :root {
+            --color-primary: #EE1D52; /* Warna khas TikTok */
+            --color-secondary: #00F2EA; /* Warna aksen cerah */
+            --color-background: #121212; /* Latar belakang gelap */
+            --color-card: #1E1E1E; /* Warna kartu/kontainer */
+            --color-text-light: #E0E0E0; /* Teks terang */
+            --color-text-dim: #A0A0A0; /* Teks redup */
+            --font-family: 'Arial', sans-serif;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            padding: 20px;
+        }
+
+        /* --- Header / Judul --- */
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 3em;
+            font-weight: bold;
+            letter-spacing: -1px;
+            margin: 0;
+        }
+
+        .app-name {
+            color: var(--color-primary);
+        }
+
+        .creator-name {
+            color: var(--color-secondary);
+            font-size: 0.5em;
+            display: block;
+            margin-top: -5px;
+        }
+        
+        /* --- Card / Konten Utama --- */
+        .welcome-card {
+            background-color: var(--color-card);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Garis tepi subtle */
+        }
+
+        .welcome-card h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: var(--color-text-light);
+        }
+
+        .welcome-card p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: var(--color-text-dim);
+        }
+
+        /* --- Tombol Aksi --- */
+        .action-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            text-decoration: none;
+            border-radius: 50px; /* Bentuk pil */
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background-color: #D31749; /* Sedikit lebih gelap saat hover */
+            transform: translateY(-2px);
+        }
+
+        /* --- Fitur / Deskripsi Tambahan --- */
+        .features {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap; /* Penting untuk responsif */
+            gap: 20px;
+        }
+
+        .feature-item {
+            flex-basis: 30%; /* 3 item per baris default */
+            min-width: 250px;
+            padding: 15px;
+            background-color: rgba(0, 242, 234, 0.1); /* Latar belakang aksen transparan */
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .feature-item i {
+            font-size: 1.5em;
+            color: var(--color-secondary);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .feature-item h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: var(--color-secondary);
+        }
+
+        .feature-item p {
+            font-size: 0.9em;
+            margin-bottom: 0;
+            color: var(--color-text-dim);
+        }
+
+        /* --- Responsiveness (Media Queries) --- */
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 2.5em;
+            }
+
+            .welcome-card {
+                padding: 30px 20px;
+            }
+
+            .welcome-card h1 {
+                font-size: 2em;
+            }
+
+            .action-button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+
+            .features {
+                flex-direction: column; /* Tumpuk item fitur di layar kecil */
+            }
+
+            .feature-item {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 2em;
+            }
+            
+            .welcome-card h1 {
+                font-size: 1.8em;
+            }
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo-text">
+                <span class="app-name">TikTok</span> Downloads
+                <span class="creator-name">by DaraXz</span>
+            </h1>
+        </div>
+
+        <div class="welcome-card">
+            <h1>Selamat Datang!</h1>
+            <p>Siap untuk mengunduh video TikTok favorit Anda tanpa Watermark? DaraXz siap membantu!</p>
+            
+            <a href="javascript:void(0);" id="enter-button" class="action-button">Mulai Mengunduh Sekarang!</a>
+
+            <div class="features">
+                <div class="feature-item">
+                    <i class="fas fa-magic"></i>
+                    <h3>Tanpa Watermark</h3>
+                    <p>Dapatkan kualitas HD tanpa gangguan logo. Murni dan bersih.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Sangat Cepat</h3>
+                    <p>Teknologi server kami menjamin proses unduhan secepat kilat.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Sepenuhnya Responsif</h3>
+                    <p>Gunakan di HP, tablet, atau PC. Tampilan selalu sempurna.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('enter-button').addEventListener('click', function() {
+            // 1. Set flag di Session Storage (hanya berlaku per tab/sesi)
+            sessionStorage.setItem('welcome_seen', 'true');
+            
+            // 2. Alihkan ke halaman utama
+            window.location.href = 'index.html'; 
+        });
+    </script>
+</body>
+</html>

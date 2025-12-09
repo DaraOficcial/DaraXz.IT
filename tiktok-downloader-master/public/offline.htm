@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Koneksi Terputus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Konsisten dengan Tema Dark Modern */
+
+        :root {
+            --color-primary: #EE1D52; /* Warna khas TikTok */
+            --color-secondary: #00F2EA; /* Warna aksen cerah */
+            --color-background: #121212; /* Latar belakang gelap */
+            --color-card: #1E1E1E; /* Warna kartu/kontainer */
+            --color-error: #FF5733; /* Warna Merah/Oranye untuk Error */
+            --color-text-light: #E0E0E0;
+            --color-text-dim: #A0A0A0;
+            --font-family: 'Arial', sans-serif;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%;
+            padding: 40px;
+        }
+
+        .offline-card {
+            background-color: var(--color-card);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--color-error); /* Border merah menonjolkan error */
+        }
+
+        .icon-large {
+            font-size: 4em;
+            color: var(--color-error);
+            margin-bottom: 20px;
+            animation: pulse-error 1.5s infinite; /* Efek visual peringatan */
+        }
+
+        @keyframes pulse-error {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .offline-card h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            color: var(--color-error);
+        }
+
+        .offline-card p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: var(--color-text-dim);
+        }
+
+        .info-box {
+            background-color: rgba(255, 87, 51, 0.1); /* Latar belakang informasi */
+            padding: 15px;
+            border-left: 5px solid var(--color-error);
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .info-box p {
+            font-size: 0.9em;
+            color: var(--color-text-light);
+            margin: 0;
+        }
+
+        .retry-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--color-secondary);
+            color: var(--color-background); /* Teks gelap di tombol terang */
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .retry-button:hover {
+            background-color: #00C7C0;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-card">
+            <i class="fas fa-plug icon-large"></i> 
+            
+            <h1>Koneksi Terputus</h1>
+            <p>Sepertinya perangkat Anda sedang tidak terhubung ke internet.</p>
+            
+            <div class="info-box">
+                <p><strong>Penting:</strong> Aplikasi **TikTok Downloads by DaraXz** sepenuhnya bersifat **online**. Kami memerlukan koneksi internet untuk memproses tautan dan mengambil video dari server TikTok.</p>
+                <p style="margin-top: 10px;">Mohon periksa pengaturan Wi-Fi atau data seluler Anda, lalu coba lagi.</p>
+            </div>
+            
+            <p class="retry-button">
+                <i class="fas fa-redo-alt"></i> Coba Sambungkan Kembali
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Logika sederhana untuk mengalihkan jika koneksi pulih (atau sebaliknya)
+        function checkConnection() {
+            if (navigator.onLine) {
+                // Jika online, alihkan ke halaman utama (index.html)
+                // Catatan: Jika Anda ingin kembali ke halaman yang terakhir diakses, gunakan window.history.back()
+                window.location.replace('index.html'); 
+            }
+        }
+
+        // Tambahkan event listener saat status jaringan berubah
+        window.addEventListener('online', checkConnection);
+
+        // Jika halaman ini diakses saat offline, tombol reload akan membantu.
+    </script>
+</body>
+</html>
