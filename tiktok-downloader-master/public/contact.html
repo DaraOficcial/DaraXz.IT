@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - TikTok Downloads by DaraXz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Konsisten dengan Tema Dark Modern */
+
+        :root {
+            --color-primary: #EE1D52; /* Warna khas TikTok */
+            --color-secondary: #00F2EA; /* Warna aksen cerah */
+            --color-background: #121212; /* Latar belakang gelap */
+            --color-card: #1E1E1E; /* Warna kartu/kontainer */
+            --color-text-light: #E0E0E0;
+            --color-text-dim: #A0A0A0;
+            --font-family: 'Arial', sans-serif;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-text-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 90%;
+            padding: 20px;
+        }
+
+        /* --- Kartu Kontak Utama --- */
+        .contact-card {
+            background-color: var(--color-card);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+
+        .contact-card h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            color: var(--color-primary);
+        }
+
+        .contact-card p.subtitle {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            color: var(--color-text-dim);
+        }
+
+        /* --- Item Kontak (Telepon & Email) --- */
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            text-align: left;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: rgba(0, 242, 234, 0.05); /* Latar belakang subtle dari warna sekunder */
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background-color: rgba(0, 242, 234, 0.15);
+        }
+
+        .contact-icon {
+            font-size: 1.8em;
+            color: var(--color-secondary);
+            width: 50px;
+            text-align: center;
+            margin-right: 20px;
+        }
+
+        .contact-details h3 {
+            margin: 0;
+            font-size: 1.1em;
+            color: var(--color-text-light);
+        }
+
+        .contact-details a {
+            display: block;
+            text-decoration: none;
+            color: var(--color-text-dim);
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+        
+        .contact-details a:hover {
+            color: var(--color-secondary);
+        }
+
+        /* --- Tombol Kembali --- */
+        .back-button {
+            display: inline-block;
+            margin-top: 35px;
+            padding: 10px 20px;
+            background-color: transparent;
+            color: var(--color-text-dim);
+            border: 1px solid var(--color-text-dim);
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: var(--color-text-light);
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 600px) {
+            .contact-card {
+                padding: 30px 20px;
+            }
+            .contact-card h1 {
+                font-size: 2em;
+            }
+            .contact-icon {
+                font-size: 1.5em;
+                width: 40px;
+            }
+            .contact-details h3 {
+                font-size: 1em;
+            }
+            .contact-details a {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="contact-card">
+            <h1>Hubungi Saya</h1>
+            <p class="subtitle">Punya pertanyaan, kritik, atau saran? Silakan hubungi DaraXz melalui detail di bawah.</p>
+            
+            <div class="contact-list">
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div class="contact-details">
+                        <h3>Telepon / WhatsApp</h3>
+                        <a target="_blank">0895405563874</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-details">
+                        <h3>Email</h3>
+                        <a>darastoreof@gmail.com</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-details">
+                        <h3>Donasi Support developer</h3>
+                        <a>https://sociabuzz.com/indrasy/tribe</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
