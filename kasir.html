@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Lite - Kasir Mini (IndexedDB Backup & Restore)</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* CSS Murni: Tema Dark Modern, Responsif, Animasi Halus */
+        :root {
+            --color-primary: #00bcd4;
+            --color-secondary: #ff9800;
+            --color-background: #1e1e1e;
+            --color-card: #2c2c2c;
+            --color-text-light: #f0f0f0;
+            --color-text-dim: #a0a0a0;
+            --color-success: #4caf50;
+            --color-danger: #f44336;
+            --color-info: #2196f3; /* Biru terang untuk Info/Backup */
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --border-radius: 8px;
+        }
+
+        /* [CSS Umum dan Layout dihilangkan untuk fokus pada perubahan, asumsikan sama seperti sebelumnya] */
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-text-light);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .status-message {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* --- Layout Utama --- */
+        .pos-layout {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .pos-section {
+            background-color: var(--color-card);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+        }
+
+        #barang-section {
+            flex: 2;
+            max-height: 80vh;
+        }
+
+        #kasir-section {
+            flex: 1.5;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #admin-section {
+            flex: 1;
+            max-height: 80vh;
+        }
+
+        /* --- Barang List --- */
+        #barang-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .barang-item {
+            background-color: #3a3a3a;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            border-bottom: 3px solid var(--color-primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .barang-item:hover {
+            background-color: #4a4a4a;
+            transform: translateY(-3px);
+        }
+
+        .barang-item h4 { margin: 0 0 5px 0; color: var(--color-text-light); }
+        .barang-item p { margin: 0; color: var(--color-secondary); font-weight: bold; }
+
+        /* --- Keranjang Kasir --- */
+        #keranjang-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #444;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .keranjang-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #444;
+        }
+
+        .keranjang-item:last-child { border-bottom: none; }
+        .keranjang-item .nama { flex: 1; }
+        
+        .keranjang-item .qty-controls { display: flex; align-items: center; gap: 5px; }
+        
+        .keranjang-item button { background: none; border: none; color: var(--color-danger); cursor: pointer; font-size: 1.2em; }
+
+        .total-info, .kembalian-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .kembalian-info {
+            color: var(--color-success);
+            border-top: 2px solid var(--color-success);
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        /* --- Admin CRUD --- */
+        .form-crud input, .form-crud button {
+            width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px;
+            border: 1px solid #444; background-color: #333; color: var(--color-text-light);
+        }
+
+        .btn { cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.8; }
+
+        .btn-primary { background-color: var(--color-primary); color: var(--color-background); }
+        .btn-success { background-color: var(--color-success); color: var(--color-background); }
+        .btn-danger { background-color: var(--color-danger); color: var(--color-background); }
+        .btn-info { background-color: var(--color-info); color: var(--color-background); }
+
+        .admin-list { margin-top: 20px; max-height: 40vh; overflow-y: auto; padding-right: 5px; }
+
+        .admin-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px; border-bottom: 1px solid #3a3a3a;
+        }
+
+        .admin-item button {
+            padding: 5px 10px; margin-left: 5px; border-radius: 3px; font-size: 0.8em;
+        }
+
+        .backup-controls {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed #444;
+        }
+
+        .backup-controls input[type="file"] {
+            padding: 5px 0;
+            border: none;
+            background: none;
+        }
+        
+        /* [CSS Modals/Struk tetap sama] */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background-color: var(--color-card); padding: 30px; border-radius: var(--border-radius); width: 90%; max-width: 400px; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5em; color: var(--color-text-dim); cursor: pointer; }
+        #struk-content { background-color: white; color: black; padding: 20px; font-family: monospace; font-size: 12px; line-height: 1.4; }
+        #struk-content h2 { text-align: center; margin-bottom: 10px; font-size: 16px; }
+        .struk-footer { text-align: center; margin: 10px 0; border-top: 1px dashed black; padding-top: 5px; }
+        .struk-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .struk-table td { padding: 2px 0; }
+        .struk-table .qty { text-align: center; width: 10%; }
+        .struk-table .price { text-align: right; }
+        .struk-total { border-top: 1px dashed black; font-weight: bold; }
+
+        @media (max-width: 1024px) {
+            .pos-layout { flex-direction: column; }
+            #barang-section, #kasir-section, #admin-section { flex: none; max-height: none; width: 100%; }
+            #barang-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1><i class="fas fa-cash-register"></i> POS Lite (IndexedDB Backup & Restore)</h1>
+    <div class="status-message" id="db-status" style="background-color: var(--color-secondary); color: var(--color-background);">
+        <i class="fas fa-database"></i> Database Offline (IndexedDB) Sedang Dimuat...
+    </div>
+
+    <div class="pos-layout">
+        
+        <div id="barang-section" class="pos-section">
+            <h2><i class="fas fa-box"></i> Daftar Produk</h2>
+            <div id="barang-list">
+                <div style="text-align: center; color: var(--color-text-dim);">Memuat barang...</div>
+            </div>
+        </div>
+
+        <div id="kasir-section" class="pos-section">
+            <h2><i class="fas fa-shopping-cart"></i> Keranjang Belanja</h2>
+            
+            <div id="keranjang-list">
+                <p style="color: var(--color-text-dim); text-align: center;">Keranjang kosong.</p>
+            </div>
+
+            <div class="summary">
+                <div class="total-info">
+                    <span>Total Belanja:</span>
+                    <span id="total-belanja">Rp 0</span>
+                </div>
+                
+                <input type="number" id="uang-bayar" placeholder="Uang Bayar (Rp)" min="0" oninput="hitungKembalian()" 
+                    style="width: 100%; padding: 10px; margin: 15px 0; border-radius: 4px; border: 1px solid #444; background-color: #333; color: var(--color-text-light);">
+
+                <div class="kembalian-info">
+                    <span>Kembalian:</span>
+                    <span id="kembalian">Rp 0</span>
+                </div>
+
+                <button id="btn-selesai" class="btn btn-success" onclick="simpanTransaksi()" style="margin-top: 20px;" disabled>
+                    <i class="fas fa-check"></i> Selesaikan Transaksi
+                </button>
+            </div>
+        </div>
+        
+        <div id="admin-section" class="pos-section">
+            <h2><i class="fas fa-cogs"></i> Admin & Data Management</h2>
+            
+            <form id="form-barang" class="form-crud">
+                <input type="hidden" id="barang-id-edit">
+                <input type="text" id="barang-nama" placeholder="Nama Barang" required>
+                <input type="number" id="barang-harga" placeholder="Harga (Rp)" min="100" required>
+                <button type="submit" id="btn-submit-barang" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Barang</button>
+            </form>
+
+            <div class="admin-list">
+                <h3>Daftar Barang (Admin View)</h3>
+                <ul id="admin-barang-list" style="list-style: none; padding: 0;"></ul>
+            </div>
+            
+            <div class="backup-controls">
+                <h3><i class="fas fa-database"></i> Manajemen Data</h3>
+                
+                <button class="btn btn-info" onclick="exportDB()"><i class="fas fa-download"></i> Backup Data (JSON)</button>
+                
+                <label for="import-file" style="display: block; margin: 10px 0 5px; color: var(--color-text-dim);">Restore dari File JSON:</label>
+                <input type="file" id="import-file" accept=".json" style="width: 100%; padding: 5px;">
+                <button class="btn btn-success" onclick="importDB()"><i class="fas fa-upload"></i> Restore Data</button>
+                
+                <button class="btn btn-danger" onclick="deleteDB()" style="margin-top: 20px;"><i class="fas fa-trash"></i> Hapus Semua Data (Reset)</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-struk" class="modal" onclick="tutupStruk(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="tutupStruk()">&times;</span>
+            
+            <h3>Struk Transaksi</h3>
+            
+            <div id="struk-content"></div>
+            
+            <button class="btn btn-primary" onclick="downloadStruk()" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-download"></i> Download Struk (PNG)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // State Global
+        let db;
+        let daftarBarang = [];
+        let keranjang = [];
+        let totalBelanja = 0;
+        const DB_NAME = 'POSLiteDB';
+        const DB_VERSION = 1;
+        const OBJECT_STORES = ['barang', 'transaksi'];
+
+        // Data Awal untuk inisialisasi IndexedDB
+        const INITIAL_BARANG = [
+          {nama: "Kopi Susu", harga: 15000},
+          {nama: "Roti Bakar Keju", harga: 20000},
+          {nama: "Es Teh Manis", harga: 5000},
+        ];
+
+        // =========================================================
+        // A. FUNGSI UTILITY & FORMATTING
+        // =========================================================
+
+        const formatRupiah = (angka) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        };
+
+        const updateStatus = (message, type = 'success') => {
+            const statusEl = document.getElementById('db-status');
+            statusEl.innerHTML = `<i class="fas fa-database"></i> ${message}`;
+            statusEl.style.backgroundColor = type === 'success' ? 'var(--color-secondary)' : 'var(--color-danger)';
+            statusEl.style.color = 'var(--color-background)';
+        };
+
+        // =========================================================
+        // B. INDEXEDDB HANDLERS
+        // =========================================================
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                if (!window.indexedDB) {
+                    updateStatus('IndexedDB tidak didukung!', 'error');
+                    return reject('IndexedDB not supported');
+                }
+                
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onerror = (e) => {
+                    updateStatus('Error membuka DB: Akses ditolak.', 'error');
+                    reject(e.target.errorCode);
+                };
+
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve(db);
+                };
+
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    
+                    // Buat Object Store Barang
+                    if (!db.objectStoreNames.contains('barang')) {
+                        const barangStore = db.createObjectStore('barang', { keyPath: 'id', autoIncrement: true });
+                        barangStore.createIndex('nama', 'nama', { unique: false }); 
+                        
+                        // Isi data awal hanya jika dibuat pertama kali
+                        const transaction = e.target.transaction;
+                        INITIAL_BARANG.forEach(barang => transaction.objectStore('barang').add(barang));
+                    }
+                    
+                    // Buat Object Store Transaksi
+                    if (!db.objectStoreNames.contains('transaksi')) {
+                        db.createObjectStore('transaksi', { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+            });
+        }
+
+        function getAllData(storeName) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not initialized');
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+                const request = store.getAll();
+
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e);
+            });
+        }
+
+        function putData(storeName, data) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not initialized');
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.put(data);
+
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e);
+            });
+        }
+
+        function deleteData(storeName, key) {
+            return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not initialized');
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.delete(key);
+
+                request.onsuccess = () => resolve();
+                request.onerror = (e) => reject(e);
+            });
+        }
+        
+        // =========================================================
+        // C. LOGIKA BACKUP & RESTORE IndexedDB (FIXED)
+        // =========================================================
+
+        /** Backup (Export) seluruh data IndexedDB ke file JSON */
+        async function exportDB() {
+            updateStatus('Mengekspor data...', 'info');
+            try {
+                const data = {};
+                
+                // Ambil data dari semua Object Store yang terdaftar
+                for (const storeName of OBJECT_STORES) {
+                    data[storeName] = await getAllData(storeName);
+                }
+
+                const dataStr = JSON.stringify(data, null, 2);
+                const fileName = `pos_lite_backup_${new Date().toISOString().slice(0, 10)}.json`;
+
+                // --- FIX UNTUK WEBVIEW DIMULAI ---
+                if (window.Android && window.Android.downloadFile) {
+                    // Panggil fungsi Native Android
+                    window.Android.downloadFile(fileName, dataStr); 
+                    updateStatus(`Backup BERHASIL dipicu. Cek folder Download di HP Anda.`, 'success');
+                } else {
+                    // Fallback lama (tetap berisiko crash di WebView tanpa JSI)
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.style.display = 'none';
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', fileName);
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // Gunakan timeout yang panjang untuk stabilitas
+                    setTimeout(() => {
+                        if (document.body.contains(link)) {
+                            document.body.removeChild(link);
+                        }
+                        URL.revokeObjectURL(url);
+                        updateStatus('Backup berhasil diunduh (Mode Browser).', 'success');
+                    }, 1000); 
+                }
+                // --- FIX UNTUK WEBVIEW SELESAI ---
+
+            } catch (error) {
+                updateStatus('Gagal melakukan backup data.', 'danger');
+                console.error('Export Error:', error);
+                setTimeout(() => updateStatus('Database Offline (IndexedDB) Siap.', 'success'), 3000); 
+            }
+        }
+
+        /** Restore (Import) data dari file JSON ke IndexedDB */
+        async function importDB() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Pilih file JSON backup terlebih dahulu.');
+                return;
+            }
+
+            if (!confirm('PERINGATAN! Mengimpor data akan MENGHAPUS SEMUA data yang ada di IndexedDB. Lanjutkan?')) return;
+            
+            updateStatus('Mengimpor dan merestore data...', 'info');
+
+            try {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+
+                        // Hapus data lama terlebih dahulu
+                        await clearAllStores();
+
+                        // Masukkan data baru per Object Store
+                        for (const storeName of OBJECT_STORES) {
+                            if (importedData[storeName] && Array.isArray(importedData[storeName])) {
+                                const transaction = db.transaction([storeName], 'readwrite');
+                                const store = transaction.objectStore(storeName);
+                                
+                                importedData[storeName].forEach(item => {
+                                    store.put(item); 
+                                });
+                            }
+                        }
+
+                        updateStatus('Restore data berhasil. Memuat ulang aplikasi.', 'success');
+                        await initApp(); // Muat ulang aplikasi untuk menampilkan data baru
+                        
+                    } catch (err) {
+                        updateStatus('Gagal memproses file JSON. Format tidak valid.', 'danger');
+                        console.error('Import/Restore Error:', err);
+                    }
+                };
+                reader.readAsText(file);
+
+            } catch (error) {
+                updateStatus('Kesalahan saat membaca file.', 'danger');
+                console.error('FileReader Error:', error);
+            }
+        }
+
+        /** Menghapus semua data dari IndexedDB (Persiapan Restore atau Reset) */
+        function clearAllStores() {
+             return new Promise((resolve, reject) => {
+                if (!db) return reject('DB not initialized');
+                
+                const transaction = db.transaction(OBJECT_STORES, 'readwrite');
+                
+                transaction.onerror = (e) => reject(e);
+                transaction.oncomplete = () => resolve();
+                
+                OBJECT_STORES.forEach(storeName => {
+                    transaction.objectStore(storeName).clear();
+                });
+            });
+        }
+
+        /** Hapus seluruh database IndexedDB (Reset Pabrik) */
+        async function deleteDB() {
+            if (!confirm('PERINGATAN! Anda akan menghapus SELURUH database POS Lite. Tindakan ini tidak dapat dibatalkan. Lanjutkan?')) return;
+            
+            updateStatus('Menghapus database...', 'danger');
+            
+            try {
+                // Tutup koneksi DB agar penghapusan bisa dilakukan
+                if (db) db.close(); 
+                
+                const request = indexedDB.deleteDatabase(DB_NAME);
+                
+                request.onsuccess = () => {
+                    alert('Database berhasil dihapus. Aplikasi akan dimuat ulang.');
+                    window.location.reload(); 
+                };
+                
+                request.onerror = (e) => {
+                    updateStatus('Gagal menghapus database.', 'danger');
+                    console.error('Delete DB Error:', e.target.errorCode);
+                };
+            } catch (error) {
+                 updateStatus('Gagal menghapus database. Pastikan tidak ada koneksi DB lain yang terbuka.', 'danger');
+            }
+        }
+
+        // =========================================================
+        // D. LOGIKA CRUD BARANG (Sama seperti sebelumnya)
+        // =========================================================
+        
+        document.getElementById('form-barang').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('barang-id-edit').value);
+            const nama = document.getElementById('barang-nama').value;
+            const harga = parseInt(document.getElementById('barang-harga').value);
+            
+            const data = { nama, harga };
+            if (id) data.id = id; 
+            
+            try {
+                await putData('barang', data);
+                updateStatus(`Barang **${nama}** ${id ? 'diperbarui' : 'ditambahkan'}!`, 'success');
+
+                this.reset();
+                document.getElementById('barang-id-edit').value = '';
+                document.getElementById('btn-submit-barang').innerHTML = '<i class="fas fa-plus"></i> Tambah Barang';
+                document.getElementById('btn-submit-barang').classList.remove('btn-success');
+                document.getElementById('btn-submit-barang').classList.add('btn-primary');
+                await initApp();
+
+            } catch (error) {
+                updateStatus('Gagal menyimpan barang.', 'danger');
+                console.error('CRUD Error:', error);
+            }
+        });
+
+        async function hapusBarang(id) {
+            if (!confirm('Yakin ingin menghapus barang ini?')) return;
+            try {
+                await deleteData('barang', id);
+                updateStatus('Barang berhasil dihapus.', 'success');
+                await initApp();
+            } catch (error) {
+                updateStatus('Gagal menghapus barang.', 'danger');
+            }
+        }
+        
+        function siapkanEdit(id, nama, harga) {
+            document.getElementById('barang-id-edit').value = id;
+            document.getElementById('barang-nama').value = nama;
+            document.getElementById('barang-harga').value = harga;
+            
+            const submitBtn = document.getElementById('btn-submit-barang');
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+            submitBtn.classList.remove('btn-primary');
+            submitBtn.classList.add('btn-success');
+        }
+
+        function renderBarang() {
+            const listEl = document.getElementById('barang-list');
+            listEl.innerHTML = '';
+            
+            if (daftarBarang.length === 0) {
+                 listEl.innerHTML = '<p style="text-align: center; color: var(--color-text-dim);">Tidak ada barang.</p>';
+                 return;
+            }
+
+            daftarBarang.forEach(barang => {
+                const div = document.createElement('div');
+                div.className = 'barang-item';
+                div.setAttribute('data-id', barang.id);
+                div.onclick = () => tambahKeKeranjang(barang);
+                div.innerHTML = `
+                    <h4>${barang.nama}</h4>
+                    <p>${formatRupiah(barang.harga)}</p>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function renderAdminList() {
+            const listEl = document.getElementById('admin-barang-list');
+            listEl.innerHTML = '';
+
+            daftarBarang.forEach(barang => {
+                const li = document.createElement('li');
+                li.className = 'admin-item';
+                li.innerHTML = `
+                    <span>${barang.nama} (${formatRupiah(barang.harga)})</span>
+                    <div>
+                        <button class="btn btn-primary" onclick="siapkanEdit(${barang.id}, '${barang.nama.replace(/'/g, "\\'")}', ${barang.harga})">Edit</button>
+                        <button class="btn btn-danger" onclick="hapusBarang(${barang.id})">Hapus</button>
+                    </div>
+                `;
+                listEl.appendChild(li);
+            });
+        }
+
+        function tambahKeKeranjang(barang) {
+            const existingItem = keranjang.find(item => item.id === barang.id);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                keranjang.push({ id: barang.id, nama: barang.nama, harga: barang.harga, qty: 1 });
+            }
+            renderKeranjang();
+        }
+
+        function ubahQty(id, delta) {
+            const item = keranjang.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                keranjang = keranjang.filter(i => i.id !== id);
+            }
+            renderKeranjang();
+        }
+
+        function hitungTotal() {
+            totalBelanja = keranjang.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+            document.getElementById('total-belanja').textContent = formatRupiah(totalBelanja);
+            hitungKembalian();
+        }
+
+        function hitungKembalian() {
+            const uangBayar = parseInt(document.getElementById('uang-bayar').value) || 0;
+            const kembalian = uangBayar - totalBelanja;
+            const kembalianEl = document.getElementById('kembalian');
+            const btnSelesai = document.getElementById('btn-selesai');
+
+            kembalianEl.textContent = formatRupiah(kembalian);
+
+            if (kembalian >= 0 && totalBelanja > 0) {
+                kembalianEl.style.color = 'var(--color-success)';
+                btnSelesai.disabled = false;
+            } else {
+                kembalianEl.style.color = 'var(--color-danger)';
+                btnSelesai.disabled = true;
+            }
+        }
+
+        function renderKeranjang() {
+            const listEl = document.getElementById('keranjang-list');
+            listEl.innerHTML = '';
+
+            if (keranjang.length === 0) {
+                listEl.innerHTML = '<p style="color: var(--color-text-dim); text-align: center;">Keranjang kosong.</p>';
+            } else {
+                keranjang.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'keranjang-item';
+                    div.innerHTML = `
+                        <span class="nama">${item.nama}</span>
+                        <div class="qty-controls">
+                            <button onclick="ubahQty(${item.id}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button onclick="ubahQty(${item.id}, 1)">+</button>
+                        </div>
+                        <span class="harga">${formatRupiah(item.harga * item.qty)}</span>
+                    `;
+                    listEl.appendChild(div);
+                });
+            }
+            hitungTotal();
+        }
+
+        async function simpanTransaksi() {
+            if (keranjang.length === 0 || totalBelanja <= 0) return alert('Keranjang belanja kosong atau total tidak valid.');
+
+            const uangBayar = parseInt(document.getElementById('uang-bayar').value);
+            const kembalian = uangBayar - totalBelanja;
+
+            if (kembalian < 0) return alert('Uang bayar kurang!');
+
+            const transaksiData = {
+                timestamp: new Date().toISOString(),
+                items: keranjang.map(item => ({
+                    id: item.id,
+                    nama: item.nama,
+                    qty: item.qty,
+                    harga_satuan: item.harga,
+                    subtotal: item.harga * item.qty
+                })),
+                total: totalBelanja,
+                bayar: uangBayar,
+                kembalian: kembalian
+            };
+
+            try {
+                await putData('transaksi', transaksiData);
+                updateStatus('Transaksi berhasil disimpan ke database lokal!', 'success');
+                
+                tampilkanStruk(transaksiData);
+
+                keranjang = [];
+                document.getElementById('uang-bayar').value = '';
+                renderKeranjang();
+
+            } catch (error) {
+                updateStatus('Gagal menyimpan transaksi ke IndexedDB.', 'danger');
+                console.error('Transaksi Error:', error);
+            }
+        }
+
+        function tampilkanStruk(transaksi) {
+            const strukEl = document.getElementById('struk-content');
+            const date = new Date(transaksi.timestamp);
+            const formattedDate = date.toLocaleDateString('id-ID') + ' ' + date.toLocaleTimeString('id-ID');
+            
+            let itemsHtml = '';
+            transaksi.items.forEach(item => {
+                itemsHtml += `
+                    <tr>
+                        <td>${item.nama}</td>
+                        <td class="qty">${item.qty}</td>
+                        <td>@${formatRupiah(item.harga_satuan)}</td>
+                        <td class="price">${formatRupiah(item.subtotal)}</td>
+                    </tr>
+                `;
+            });
+
+            strukEl.innerHTML = `
+                <h2>POS LITE</h2>
+                <div style="text-align: center;">${formattedDate}</div>
+                <div style="border-top: 1px dashed black; margin: 10px 0;"></div>
+                
+                <table class="struk-table">
+                    <tbody>${itemsHtml}</tbody>
+                </table>
+                
+                <div class="struk-total">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>TOTAL</span>
+                        <span>${formatRupiah(transaksi.total)}</span>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px dashed black; margin: 10px 0;"></div>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Bayar</span>
+                    <span>${formatRupiah(transaksi.bayar)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Kembalian</span>
+                    <span>${formatRupiah(transaksi.kembalian)}</span>
+                </div>
+
+                <div class="struk-footer">
+                    <p>Terima kasih atas kunjungan Anda!</p>
+                </div>
+            `;
+            document.getElementById('modal-struk').style.display = 'flex';
+        }
+
+        function tutupStruk(e) {
+            if (e && e.target.id === 'modal-struk') {
+                document.getElementById('modal-struk').style.display = 'none';
+                return;
+            }
+            document.getElementById('modal-struk').style.display = 'none';
+        }
+
+        /** Download Struk (PNG) menggunakan JavaScript Interface */
+        function downloadStruk() {
+            const strukEl = document.getElementById('struk-content');
+            html2canvas(strukEl, { scale: 3, logging: false, useCORS: true }).then(canvas => {
+                const base64Image = canvas.toDataURL('image/png'); // Format: data:image/png;base64,...
+                const fileName = 'struk_transaksi_' + new Date().getTime() + '.png';
+
+                // --- FIX UNTUK WEBVIEW DIMULAI ---
+                if (window.Android && window.Android.downloadImage) {
+                    // Panggil fungsi Native Android untuk menyimpan Base64
+                    window.Android.downloadImage(fileName, base64Image);
+                    tutupStruk(); // Tutup modal setelah dipicu
+                } else {
+                    // Fallback lama (yang rentan crash di WebView)
+                    const link = document.createElement('a');
+                    link.download = fileName;
+                    link.href = base64Image;
+                    link.click();
+                }
+                // --- FIX UNTUK WEBVIEW SELESAI ---
+            });
+        }
+
+
+        // =========================================================
+        // G. INISIALISASI APLIKASI
+        // =========================================================
+        
+        async function initApp() {
+            try {
+                await openDB();
+                updateStatus('Database Offline (IndexedDB) Siap.', 'success');
+                
+                daftarBarang = await getAllData('barang');
+                
+                renderBarang();
+                renderAdminList();
+                renderKeranjang();
+                document.getElementById('btn-selesai').disabled = false;
+            } catch (e) {
+                updateStatus('Aplikasi tidak bisa diinisialisasi. Error koneksi DB.', 'danger');
+                console.error(e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
