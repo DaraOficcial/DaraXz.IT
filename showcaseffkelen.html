@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF Showcase Generator — DaraXzIOT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0a12;
+            --card-bg: rgba(30, 30, 46, 0.8);
+            --neon-pink: #ff4757;
+            --neon-orange: #ff9f43;
+            --neon-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --bronze: #cd7f32;
+            --silver: #c0c0c0;
+            --gold: #ffd700;
+            --platinum: #e5e4e2;
+            --diamond: #b9f2ff;
+            --heroic: #ff0000;
+            --grandmaster: #ff00ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #2a2a3a;
+        }
+
+        h2 { margin-bottom: 20px; font-size: 1.5rem; color: var(--neon-orange); }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 5px; }
+        
+        input, select, textarea {
+            width: 100%;
+            background: #161625;
+            border: 1px solid #333;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus { border-color: var(--neon-pink); }
+
+        .upload-area {
+            border: 2px dashed #444;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .upload-area:hover { border-color: var(--neon-blue); background: rgba(59, 130, 246, 0.1); }
+
+        /* Preview Card Styles */
+        .preview-section {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .account-card {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, #1e1e2e 0%, #0a0a12 100%);
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #333;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        /* Efek Gradient Berdasarkan Rank di Card */
+        .card-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255, 71, 87, 0.2), transparent);
+            pointer-events: none;
+        }
+
+        .avatar-container {
+            width: 100%;
+            height: 200px;
+            background: #2a2a3a;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+
+        #previewImg { width: 100%; height: 100%; object-fit: cover; }
+
+        .rank-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .acc-name { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+        .acc-level { color: var(--text-dim); margin-bottom: 20px; font-size: 0.9rem; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .info-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+        .info-value { font-weight: 700; color: white; font-size: 1rem; }
+
+        .price-tag {
+            margin-top: auto;
+            background: linear-gradient(to right, var(--neon-pink), var(--neon-orange));
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+
+        .footer-watermark {
+            margin-top: 15px;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            text-align: center;
+        }
+
+        /* Action Buttons */
+        .btn-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-download { background: var(--neon-pink); color: white; }
+        .btn-share { background: #25d366; color: white; }
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
+
+        /* Rank Colors */
+        .rank-bronze { background: var(--bronze); color: white; }
+        .rank-heroic { background: var(--heroic); box-shadow: 0 0 15px var(--heroic); }
+        .rank-grandmaster { background: var(--grandmaster); box-shadow: 0 0 15px var(--grandmaster); }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <section class="form-section">
+            <h2>Showcase Editor</h2>
+            
+            <div class="input-group">
+                <label>Nama Akun</label>
+                <input type="text" id="inName" placeholder="Masukkan Nickname" oninput="updatePreview()">
+            </div>
+
+            <div class="input-group">
+                <label>Rank Saat Ini</label>
+                <select id="inRank" onchange="updatePreview()">
+                    <option value="Bronze">Bronze</option>
+                    <option value="Silver">Silver</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Platinum">Platinum</option>
+                    <option value="Diamond">Diamond</option>
+                    <option value="Heroic" selected>Heroic</option>
+                    <option value="Grandmaster">Grandmaster</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <div class="input-group" style="flex: 1;">
+                    <label>Level</label>
+                    <input type="number" id="inLevel" value="65" oninput="updatePreview()">
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <label>Jumlah Bundle</label>
+                    <input type="number" id="inBundle" value="120" oninput="updatePreview()">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Skin Langka / Evo Gun</label>
+                <textarea id="inSkins" rows="3" placeholder="Contoh: AK Blue Flame Draco (Max), M1014 Green Flame..." oninput="updatePreview()">AK Blue Flame Draco (Max)</textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Harga (IDR)</label>
+                <input type="text" id="inPrice" placeholder="Rp 500.000" oninput="updatePreview()">
+            </div>
+
+            <div class="input-group">
+                <label>Screenshot / Avatar</label>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <span>Klik atau Seret Gambar</span>
+                    <input type="file" id="fileInput" hidden accept="image/*" onchange="handleImage(event)">
+                </div>
+            </div>
+        </section>
+
+        <section class="preview-section">
+            <div class="account-card" id="showcaseCard">
+                <div class="card-overlay" id="rankOverlay"></div>
+                
+                <div class="avatar-container">
+                    <img id="previewImg" src="https://via.placeholder.com/400x200" alt="SS Akun">
+                </div>
+
+                <div class="rank-badge" id="cardRankBadge">Heroic</div>
+                <h1 class="acc-name" id="cardName">DaraXz-IOT</h1>
+                <p class="acc-level">Level: <span id="cardLevel">65</span></p>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <p class="info-label">Total Bundle</p>
+                        <p class="info-value" id="cardBundle">120</p>
+                    </div>
+                    <div class="info-item">
+                        <p class="info-label">Rare Item</p>
+                        <p class="info-value" style="font-size: 0.8rem;" id="cardSkins">Evo Gun Max</p>
+                    </div>
+                </div>
+
+                <div class="price-tag" id="cardPrice">
+                    Rp 0
+                </div>
+
+                <div class="footer-watermark">
+                    Generated by DaraXzIOT Generator
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-download" onclick="exportImage()">Download PNG</button>
+                <a href="#" id="waShare" class="btn btn-share" target="_blank">Share WA</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Realtime Preview Logic
+        function updatePreview() {
+            const name = document.getElementById('inName').value || "Nickname";
+            const rank = document.getElementById('inRank').value;
+            const level = document.getElementById('inLevel').value;
+            const bundle = document.getElementById('inBundle').value;
+            const skins = document.getElementById('inSkins').value;
+            const price = document.getElementById('inPrice').value || "Rp 0";
+
+            // Update Text
+            document.getElementById('cardName').innerText = name;
+            document.getElementById('cardLevel').innerText = level;
+            document.getElementById('cardBundle').innerText = bundle;
+            document.getElementById('cardSkins').innerText = skins;
+            document.getElementById('cardPrice').innerText = price;
+            
+            // Update Rank Badge & Theme
+            const badge = document.getElementById('cardRankBadge');
+            const overlay = document.getElementById('rankOverlay');
+            badge.innerText = rank;
+            
+            // Reset Class
+            badge.className = 'rank-badge';
+            
+            // Logika Warna Berdasarkan Rank
+            if (rank === 'Heroic') {
+                badge.classList.add('rank-heroic');
+                overlay.style.background = 'radial-gradient(circle at top right, rgba(255, 0, 0, 0.4), transparent)';
+            } else if (rank === 'Grandmaster') {
+                badge.classList.add('rank-grandmaster');
+                overlay.style.background = 'radial-gradient(circle at top right, rgba(255, 0, 255, 0.4), transparent)';
+            } else if (rank === 'Bronze') {
+                badge.classList.add('rank-bronze');
+                overlay.style.background = 'none';
+            } else {
+                badge.style.backgroundColor = '#3b82f6';
+                overlay.style.background = 'radial-gradient(circle at top right, rgba(59, 130, 246, 0.4), transparent)';
+            }
+
+            // Update WA Link
+            const waMsg = encodeURIComponent(`Halo, saya ingin jual/tanya akun FF ini:\nNama: ${name}\nRank: ${rank}\nHarga: ${price}`);
+            document.getElementById('waShare').href = `https://wa.me/?text=${waMsg}`;
+        }
+
+        // Image Handling
+        function handleImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('previewImg').src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Export to PNG using html2canvas
+        function exportImage() {
+            const card = document.getElementById('showcaseCard');
+            
+            // Menambahkan loading state
+            const btn = document.querySelector('.btn-download');
+            btn.innerText = "Processing...";
+
+            html2canvas(card, {
+                backgroundColor: null,
+                scale: 2, // Kualitas HD
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'FF-Showcase-DaraXzIOT.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                btn.innerText = "Download PNG";
+            });
+        }
+
+        // Inisialisasi awal
+        updatePreview();
+    </script>
+</body>
+</html>
