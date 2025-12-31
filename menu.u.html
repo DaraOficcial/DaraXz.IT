@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Crostic Carnival - Main Menu</title>
+    <style>
+        :root {
+            --pink: #ff0080;
+            --purple: #7928ca;
+            --yellow: #ffeb3b;
+            --blue: #0070f3;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            color: white;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Ornamen Partikel (Hemat RAM) */
+        .dot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            z-index: 0;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-50px) translateX(20px); }
+        }
+
+        /* Judul Gede & Rame */
+        .title-box {
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: var(--yellow);
+            text-shadow: 5px 5px 0px var(--pink), 8px 8px 0px rgba(0,0,0,0.2);
+            animation: shake 0.5s infinite alternate;
+        }
+
+        @keyframes shake {
+            from { transform: rotate(-2deg); }
+            to { transform: rotate(2deg); }
+        }
+
+        /* Container Tombol */
+        .menu-list {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 85%;
+            max-width: 320px;
+        }
+
+        .btn {
+            display: block;
+            padding: 18px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border-radius: 15px;
+            transition: 0.2s;
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .play { background: var(--pink); border-color: #ff5eb1; }
+        .extra { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
+
+        /* Status Level */
+        .badge {
+            margin-top: 30px;
+            padding: 8px 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        /* Overlay Popup Sederhana */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 20px;
+            width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        for (let i = 0; i < 15; i++) {
+            let dot = document.createElement('div');
+            dot.className = 'dot';
+            let size = Math.random() * 60 + 10;
+            dot.style.width = size + 'px';
+            dot.style.height = size + 'px';
+            dot.style.top = Math.random() * 100 + 'vh';
+            dot.style.left = Math.random() * 100 + 'vw';
+            dot.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(dot);
+        }
+    </script>
+
+    <div class="title-box">
+        <h1>CROSTIC</h1>
+        <div style="font-weight: bold; letter-spacing: 2px;">PUZZLE ADVENTURE</div>
+    </div>
+
+    <div class="menu-list">
+      <a href="isi-isian.html" class="btn play">MULAI MAIN</a>
+      <div class="btn extra" onclick="showMsg('Level list', '100 level tersedia untuk kamu')">🏆 LEVEL LIST</div>
+      <div class="btn extra" onclick="showMsg('Donasi','https://sociabuzz.com/indrasy/tribe')">🎁 DONASI</div>
+
+    <div class="badge" id="lvl-status">Loading progress...</div>
+
+    <div class="overlay" id="overlay" onclick="this.style.display='none'">
+        <div class="card">
+            <h2 id="pop-title"></h2>
+            <p id="pop-text"></p>
+            <button style="width:100%; padding:10px; border:none; border-radius:10px; background:var(--pink); color:white; font-weight:bold;">OKE!</button>
+        </div>
+    </div>
+
+    <script>
+        // Ambil data dari LocalStorage yang dibikin di file index.html
+        const lastLvl = localStorage.getItem('crostic_save') || localStorage.getItem('c_lvl');
+        const badge = document.getElementById('lvl-status');
+        
+        if (lastLvl !== null) {
+            badge.innerText = "PROGRES: LEVEL " + (parseInt(lastLvl) + 1);
+        } else {
+            badge.innerText = "BELUM ADA PROGRES";
+        }
+
+        function showMsg(title, text) {
+            document.getElementById('pop-title').innerText = title;
+            document.getElementById('pop-text').innerText = text;
+            document.getElementById('overlay').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

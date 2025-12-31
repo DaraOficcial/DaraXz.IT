@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crostic Pro - Ultra UI</title>
+    <style>
+        :root {
+            --pink: #ff0080;
+            --purple: #6a11cb;
+            --light-bg: #f0f2f5;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        /* Hamburger & Menu */
+        .hamburger {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            color: white;
+            background: var(--purple);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001;
+        }
+
+        .menu-overlay.active { left: 0; }
+
+        .menu-content {
+            width: 280px; height: 100%;
+            background: white;
+            padding: 30px 20px;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+        }
+
+        .menu-content h3 { color: var(--purple); margin-bottom: 30px; border-left: 5px solid var(--pink); padding-left: 10px; }
+        .menu-content ul { list-style: none; padding: 0; }
+        .menu-content li {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .menu-content li:hover { color: var(--pink); padding-left: 20px; }
+
+        /* Game UI */
+        .game-header { text-align: center; margin-top: 60px; }
+        #lvl-display { background: var(--purple); color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
+
+        .main-phrase {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 25px 0;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 20px;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .clues-container { width: 100%; max-width: 500px; margin-bottom: 140px; }
+        .clue-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .clue-text { font-size: 13px; font-weight: 700; color: #444; flex: 1; }
+        .box-row { display: flex; gap: 5px; }
+        .box-wrapper { display: flex; flex-direction: column; align-items: center; }
+        .index-num { font-size: 10px; color: var(--pink); font-weight: 800; margin-bottom: 3px; }
+
+        .box {
+            width: 32px;
+            height: 40px;
+            border: 2px solid #eef0f2;
+            border-bottom: 4px solid var(--purple);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: white;
+            transition: 0.2s;
+        }
+        .box.active { border-color: var(--pink); background: #fff0f5; transform: translateY(-3px); }
+
+        /* Keyboard */
+        .keyboard {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #f1f3f5;
+            padding: 15px 8px;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+        .key {
+            background: white;
+            border: none;
+            padding: 18px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #dee2e6;
+        }
+        .key:active { transform: translateY(2px); box-shadow: none; background: var(--pink); color: white; }
+
+        /* Custom Popup (Modal) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-card {
+            background: white;
+            width: 85%;
+            max-width: 320px;
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .modal-card h4 { margin-top: 0; color: var(--purple); font-size: 20px; }
+        .modal-card p { color: #666; font-size: 14px; line-height: 1.5; }
+        
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--pink); color: white; }
+        .btn-secondary { background: #f1f3f5; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-content">
+            <h3 onclick="toggleMenu()">MENU</h3>
+            <ul>
+                <li onclick="showPopup('Tentang Game', 'Game Crostic/isi-isian. Dibuat buat nemenin liburan lu biar makin asik!')">About</li>
+                <li onclick="showPopup('Credits', 'Developer: DaraXy\nInspirasi: iklan crostic')">Credit</li>
+                <li onclick="showPopup('Donasi', 'https://sociabuzz.com/indrasy/tribe')">Donasi</li>
+                <li onclick="openConfirm()" style="color:var(--pink)">RESET PROGRESS</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="game-header">
+        <span id="lvl-display">LEVEL 1</span>
+    </div>
+
+    <div class="main-phrase" id="main-phrase"></div>
+    <div class="clues-container" id="clues-container"></div>
+
+    <div class="keyboard" id="keyboard"></div>
+
+    <div class="modal-overlay" id="infoPopup">
+        <div class="modal-card">
+            <h4 id="popTitle">Title</h4>
+            <p id="popDesc">Description</p>
+            <button class="modal-btn btn-primary" onclick="closePopup('infoPopup')">MANTAP</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmPopup">
+        <div class="modal-card">
+            <h4>Yakin Nih?</h4>
+            <p>Semua progress level lu bakal kehapus dan balik lagi ke awal.</p>
+            <button class="modal-btn btn-primary" onclick="handleReset(true)">YA, RESET!</button>
+            <button class="modal-btn btn-secondary" onclick="closePopup('confirmPopup')">GAK JADI</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="winPopup">
+        <div class="modal-card">
+            <h4>GGWP! 🎉</h4>
+            <p>Jawaban lu bener semua. Siap buat level selanjutnya?</p>
+            <button class="modal-btn btn-primary" onclick="goToNextLevel()">LANJUTKAN</button>
+        </div>
+    </div>
+
+<script>
+    const levels = [
+        { phrase: "DURIAN RAJA BUAH", clues: [{w:"DURIAN", t:"Raja Buah"}, {w:"RAJA", t:"Pemimpin Kerajaan"}] },
+        { phrase: "KOPLO ASLI INDONESIA", clues: [{w:"KOPLO", t:"Musik Kendang"}, {w:"ASLI", t:"Original"}] },
+        { phrase: "SMARTPHONE CANGGIH", clues: [{w:"CANGGIH", t:"Teknologi Modern"}, {w:"SMART", t:"Pintar"}] }
+    ];
+
+    let currentLvlIdx = 0;
+    let activeNum = null;
+    let charToNum = {};
+
+    // Local Storage
+    function save() { localStorage.setItem('crostic_save', currentLvlIdx); }
+    function load() { 
+        const s = localStorage.getItem('crostic_save');
+        if(s) currentLvlIdx = parseInt(s);
+    }
+
+    // Modal Controllers
+    function showPopup(title, desc) {
+        document.getElementById('popTitle').innerText = title;
+        document.getElementById('popDesc').innerText = desc;
+        document.getElementById('infoPopup').style.display = 'flex';
+    }
+    function openConfirm() { 
+        toggleMenu();
+        document.getElementById('confirmPopup').style.display = 'flex'; 
+    }
+    function closePopup(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Core Game
+    function initLevel() {
+        if(currentLvlIdx >= levels.length) {
+            showPopup("TAMAT!", "Gila lu tamat 100 level! Lu emang sepuh!");
+            currentLvlIdx = 0;
+        }
+
+        const data = levels[currentLvlIdx];
+        document.getElementById('lvl-display').innerText = `LEVEL ${currentLvlIdx + 1}`;
+        document.getElementById('main-phrase').innerHTML = '';
+        document.getElementById('clues-container').innerHTML = '';
+        
+        charToNum = {};
+        let n = 1;
+        data.phrase.replace(/\s/g, '').split('').forEach(c => {
+            if(!charToNum[c]) charToNum[c] = n++;
+        });
+
+        data.phrase.split('').forEach(c => {
+            if(c === ' ') document.getElementById('main-phrase').innerHTML += '<div style="width:12px"></div>';
+            else renderBox(c, document.getElementById('main-phrase'));
+        });
+
+        data.clues.forEach(clue => {
+            const row = document.createElement('div');
+            row.className = 'clue-item';
+            row.innerHTML = `<div class="clue-text">${clue.t}</div><div class="box-row"></div>`;
+            document.getElementById('clues-container').appendChild(row);
+            clue.w.split('').forEach(c => renderBox(c, row.querySelector('.box-row')));
+        });
+        save();
+    }
+
+    function renderBox(char, container) {
+        const num = charToNum[char];
+        const wrap = document.createElement('div');
+        wrap.className = 'box-wrapper';
+        wrap.innerHTML = `<span class="index-num">${num}</span><div class="box" data-num="${num}" onclick="focusNum(${num})"></div>`;
+        container.appendChild(wrap);
+    }
+
+    function focusNum(n) {
+        activeNum = n;
+        document.querySelectorAll('.box').forEach(b => b.classList.toggle('active', b.dataset.num == n));
+    }
+
+    function typeLetter(l) {
+        if(!activeNum) return;
+        document.querySelectorAll(`.box[data-num="${activeNum}"]`).forEach(b => b.innerText = l);
+        checkWin();
+    }
+
+    function checkWin() {
+        const goal = levels[currentLvlIdx].phrase.replace(/\s/g, '');
+        let current = "";
+        document.querySelectorAll('#main-phrase .box').forEach(b => current += b.innerText);
+        if(current === goal) document.getElementById('winPopup').style.display = 'flex';
+    }
+
+    function goToNextLevel() {
+        closePopup('winPopup');
+        currentLvlIdx++;
+        initLevel();
+    }
+
+    function handleReset(yes) {
+        if(yes) { currentLvlIdx = 0; localStorage.clear(); initLevel(); }
+        closePopup('confirmPopup');
+    }
+
+    function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
+
+    // Build Keys
+    "QWERTYUIOPASDFGHJKLZXCVBNM".split('').forEach(k => {
+        const b = document.createElement('button');
+        b.className = 'key'; b.innerText = k;
+        b.onclick = () => typeLetter(k);
+        document.getElementById('keyboard').appendChild(b);
+    });
+
+    load();
+    initLevel();
+</script>
+</body>
+</html>
