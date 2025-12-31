@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crostic Pro - Ultra UI</title>
+    <title>Crostic Pro - DaraXy Version</title>
     <style>
         :root {
             --pink: #ff0080;
             --purple: #6a11cb;
             --light-bg: #f0f2f5;
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.9);
         }
 
         body {
@@ -24,7 +23,7 @@
             overflow-x: hidden;
         }
 
-        /* Hamburger & Menu */
+        /* Menu Hamburger */
         .hamburger {
             position: fixed;
             top: 15px;
@@ -75,7 +74,7 @@
 
         /* Game UI */
         .game-header { text-align: center; margin-top: 60px; }
-        #lvl-display { background: var(--purple); color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
+        #lvl-display { background: var(--purple); color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; }
 
         .main-phrase {
             display: flex;
@@ -102,7 +101,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
-        .clue-text { font-size: 13px; font-weight: 700; color: #444; flex: 1; }
+        .clue-text { font-size: 13px; font-weight: 700; color: #444; flex: 1; margin-right: 10px; }
         .box-row { display: flex; gap: 5px; }
         .box-wrapper { display: flex; flex-direction: column; align-items: center; }
         .index-num { font-size: 10px; color: var(--pink); font-weight: 800; margin-bottom: 3px; }
@@ -135,6 +134,7 @@
             gap: 6px;
             border-radius: 20px 20px 0 0;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            z-index: 900;
         }
         .key {
             background: white;
@@ -144,10 +144,11 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 3px 0 #dee2e6;
+            -webkit-tap-highlight-color: transparent;
         }
         .key:active { transform: translateY(2px); box-shadow: none; background: var(--pink); color: white; }
 
-        /* Custom Popup (Modal) */
+        /* Modal Styles */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -169,13 +170,13 @@
         }
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .modal-card h4 { margin-top: 0; color: var(--purple); font-size: 20px; }
-        .modal-card p { color: #666; font-size: 14px; line-height: 1.5; }
+        .modal-card h4 { margin: 0 0 10px 0; color: var(--purple); font-size: 20px; }
+        .modal-card p { color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
         
         .modal-btn {
             width: 100%;
             padding: 12px;
-            margin-top: 10px;
+            margin-top: 8px;
             border: none;
             border-radius: 12px;
             font-weight: bold;
@@ -192,8 +193,8 @@
         <div class="menu-content">
             <h3 onclick="toggleMenu()">MENU</h3>
             <ul>
-                <li onclick="showPopup('Tentang Game', 'Game Crostic/isi-isian. Dibuat buat nemenin liburan lu biar makin asik!')">About</li>
-                <li onclick="showPopup('Credits', 'Developer: DaraXy\nInspirasi: iklan crostic')">Credit</li>
+                <li onclick="showPopup('Tentang Game', 'Game Crostic buatan DaraXy. Tantang otakmu dengan teka-teki seru!')">About</li>
+                <li onclick="showPopup('Credits', 'Developer: DaraXy\nInspirasi: Iklan Crostic')">Credit</li>
                 <li onclick="showPopup('Donasi', 'https://sociabuzz.com/indrasy/tribe')">Donasi</li>
                 <li onclick="openConfirm()" style="color:var(--pink)">RESET PROGRESS</li>
             </ul>
@@ -206,7 +207,6 @@
 
     <div class="main-phrase" id="main-phrase"></div>
     <div class="clues-container" id="clues-container"></div>
-
     <div class="keyboard" id="keyboard"></div>
 
     <div class="modal-overlay" id="infoPopup">
@@ -220,7 +220,7 @@
     <div class="modal-overlay" id="confirmPopup">
         <div class="modal-card">
             <h4>Yakin Nih?</h4>
-            <p>Semua progress level lu bakal kehapus dan balik lagi ke awal.</p>
+            <p>Semua progress level kamu akan dihapus dan kembali ke Level 1.</p>
             <button class="modal-btn btn-primary" onclick="handleReset(true)">YA, RESET!</button>
             <button class="modal-btn btn-secondary" onclick="closePopup('confirmPopup')">GAK JADI</button>
         </div>
@@ -229,123 +229,128 @@
     <div class="modal-overlay" id="winPopup">
         <div class="modal-card">
             <h4>GGWP! 🎉</h4>
-            <p>Jawaban lu bener semua. Siap buat level selanjutnya?</p>
-            <button class="modal-btn btn-primary" onclick="goToNextLevel()">LANJUTKAN</button>
+            <p>Kamu jenius! Siap lanjut ke tantangan berikutnya?</p>
+            <button class="modal-btn btn-primary" onclick="goToNextLevel()">LEVEL LANJUT</button>
         </div>
     </div>
 
-<script>
-    const levels = [
-        { phrase: "DURIAN RAJA BUAH", clues: [{w:"DURIAN", t:"Raja Buah"}, {w:"RAJA", t:"Pemimpin Kerajaan"}] },
-        { phrase: "KOPLO ASLI INDONESIA", clues: [{w:"KOPLO", t:"Musik Kendang"}, {w:"ASLI", t:"Original"}] },
-        { phrase: "SMARTPHONE CANGGIH", clues: [{w:"CANGGIH", t:"Teknologi Modern"}, {w:"SMART", t:"Pintar"}] }
-    ];
+    <script src="soal.js"></script>
 
-    let currentLvlIdx = 0;
-    let activeNum = null;
-    let charToNum = {};
+    <script>
+        let currentLvlIdx = 0;
+        let activeNum = null;
+        let charToNum = {};
 
-    // Local Storage
-    function save() { localStorage.setItem('crostic_save', currentLvlIdx); }
-    function load() { 
-        const s = localStorage.getItem('crostic_save');
-        if(s) currentLvlIdx = parseInt(s);
-    }
-
-    // Modal Controllers
-    function showPopup(title, desc) {
-        document.getElementById('popTitle').innerText = title;
-        document.getElementById('popDesc').innerText = desc;
-        document.getElementById('infoPopup').style.display = 'flex';
-    }
-    function openConfirm() { 
-        toggleMenu();
-        document.getElementById('confirmPopup').style.display = 'flex'; 
-    }
-    function closePopup(id) { document.getElementById(id).style.display = 'none'; }
-
-    // Core Game
-    function initLevel() {
-        if(currentLvlIdx >= levels.length) {
-            showPopup("TAMAT!", "Gila lu tamat 100 level! Lu emang sepuh!");
-            currentLvlIdx = 0;
+        function save() { localStorage.setItem('crostic_save', currentLvlIdx); }
+        function load() { 
+            const s = localStorage.getItem('crostic_save');
+            if(s) currentLvlIdx = parseInt(s);
         }
 
-        const data = levels[currentLvlIdx];
-        document.getElementById('lvl-display').innerText = `LEVEL ${currentLvlIdx + 1}`;
-        document.getElementById('main-phrase').innerHTML = '';
-        document.getElementById('clues-container').innerHTML = '';
-        
-        charToNum = {};
-        let n = 1;
-        data.phrase.replace(/\s/g, '').split('').forEach(c => {
-            if(!charToNum[c]) charToNum[c] = n++;
+        function showPopup(title, desc) {
+            document.getElementById('popTitle').innerText = title;
+            document.getElementById('popDesc').innerText = desc;
+            document.getElementById('infoPopup').style.display = 'flex';
+        }
+
+        function openConfirm() { 
+            toggleMenu();
+            document.getElementById('confirmPopup').style.display = 'flex'; 
+        }
+
+        function closePopup(id) { document.getElementById(id).style.display = 'none'; }
+
+        function initLevel() {
+            if(currentLvlIdx >= levels.length) {
+                showPopup("TAMAT!", "Luar biasa! Kamu sudah menyelesaikan semua level yang ada!");
+                currentLvlIdx = 0;
+                save();
+            }
+
+            const data = levels[currentLvlIdx];
+            document.getElementById('lvl-display').innerText = `LEVEL ${currentLvlIdx + 1}`;
+            document.getElementById('main-phrase').innerHTML = '';
+            document.getElementById('clues-container').innerHTML = '';
+            
+            charToNum = {};
+            let n = 1;
+            data.phrase.replace(/\s/g, '').split('').forEach(c => {
+                if(!charToNum[c]) charToNum[c] = n++;
+            });
+
+            data.phrase.split('').forEach(c => {
+                if(c === ' ') {
+                    document.getElementById('main-phrase').innerHTML += '<div style="width:12px"></div>';
+                } else {
+                    renderBox(c, document.getElementById('main-phrase'));
+                }
+            });
+
+            data.clues.forEach(clue => {
+                const row = document.createElement('div');
+                row.className = 'clue-item';
+                row.innerHTML = `<div class="clue-text">${clue.t}</div><div class="box-row"></div>`;
+                document.getElementById('clues-container').appendChild(row);
+                clue.w.split('').forEach(c => renderBox(c, row.querySelector('.box-row')));
+            });
+            save();
+        }
+
+        function renderBox(char, container) {
+            const num = charToNum[char];
+            const wrap = document.createElement('div');
+            wrap.className = 'box-wrapper';
+            wrap.innerHTML = `<span class="index-num">${num}</span><div class="box" data-num="${num}" onclick="focusNum(${num})"></div>`;
+            container.appendChild(wrap);
+        }
+
+        function focusNum(n) {
+            activeNum = n;
+            document.querySelectorAll('.box').forEach(b => b.classList.toggle('active', b.dataset.num == n));
+        }
+
+        function typeLetter(l) {
+            if(!activeNum) return;
+            document.querySelectorAll(`.box[data-num="${activeNum}"]`).forEach(b => b.innerText = l);
+            checkWin();
+        }
+
+        function checkWin() {
+            const goal = levels[currentLvlIdx].phrase.replace(/\s/g, '');
+            let current = "";
+            document.querySelectorAll('#main-phrase .box').forEach(b => current += b.innerText);
+            if(current === goal) {
+                setTimeout(() => {
+                    document.getElementById('winPopup').style.display = 'flex';
+                }, 300);
+            }
+        }
+
+        function goToNextLevel() {
+            closePopup('winPopup');
+            currentLvlIdx++;
+            initLevel();
+        }
+
+        function handleReset(yes) {
+            if(yes) { currentLvlIdx = 0; localStorage.clear(); initLevel(); }
+            closePopup('confirmPopup');
+        }
+
+        function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
+
+        // Generate Keyboard
+        const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM".split('');
+        alphabet.forEach(k => {
+            const b = document.createElement('button');
+            b.className = 'key';
+            b.innerText = k;
+            b.onclick = () => typeLetter(k);
+            document.getElementById('keyboard').appendChild(b);
         });
 
-        data.phrase.split('').forEach(c => {
-            if(c === ' ') document.getElementById('main-phrase').innerHTML += '<div style="width:12px"></div>';
-            else renderBox(c, document.getElementById('main-phrase'));
-        });
-
-        data.clues.forEach(clue => {
-            const row = document.createElement('div');
-            row.className = 'clue-item';
-            row.innerHTML = `<div class="clue-text">${clue.t}</div><div class="box-row"></div>`;
-            document.getElementById('clues-container').appendChild(row);
-            clue.w.split('').forEach(c => renderBox(c, row.querySelector('.box-row')));
-        });
-        save();
-    }
-
-    function renderBox(char, container) {
-        const num = charToNum[char];
-        const wrap = document.createElement('div');
-        wrap.className = 'box-wrapper';
-        wrap.innerHTML = `<span class="index-num">${num}</span><div class="box" data-num="${num}" onclick="focusNum(${num})"></div>`;
-        container.appendChild(wrap);
-    }
-
-    function focusNum(n) {
-        activeNum = n;
-        document.querySelectorAll('.box').forEach(b => b.classList.toggle('active', b.dataset.num == n));
-    }
-
-    function typeLetter(l) {
-        if(!activeNum) return;
-        document.querySelectorAll(`.box[data-num="${activeNum}"]`).forEach(b => b.innerText = l);
-        checkWin();
-    }
-
-    function checkWin() {
-        const goal = levels[currentLvlIdx].phrase.replace(/\s/g, '');
-        let current = "";
-        document.querySelectorAll('#main-phrase .box').forEach(b => current += b.innerText);
-        if(current === goal) document.getElementById('winPopup').style.display = 'flex';
-    }
-
-    function goToNextLevel() {
-        closePopup('winPopup');
-        currentLvlIdx++;
+        load();
         initLevel();
-    }
-
-    function handleReset(yes) {
-        if(yes) { currentLvlIdx = 0; localStorage.clear(); initLevel(); }
-        closePopup('confirmPopup');
-    }
-
-    function toggleMenu() { document.getElementById('menuOverlay').classList.toggle('active'); }
-
-    // Build Keys
-    "QWERTYUIOPASDFGHJKLZXCVBNM".split('').forEach(k => {
-        const b = document.createElement('button');
-        b.className = 'key'; b.innerText = k;
-        b.onclick = () => typeLetter(k);
-        document.getElementById('keyboard').appendChild(b);
-    });
-
-    load();
-    initLevel();
-</script>
+    </script>
 </body>
 </html>
