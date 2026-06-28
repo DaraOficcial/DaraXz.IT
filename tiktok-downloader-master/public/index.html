@@ -6,15 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <script>
-        // Periksa apakah flag "welcome_seen" TIDAK ada di Session Storage
-        // Jika tidak ada, pengguna belum melihat welcome.html di sesi ini.
-        if (sessionStorage.getItem('welcome_seen') !== 'true') {
-            // Alihkan paksa kembali ke welcome.html
-            // Menggunakan replace() mencegah pengguna menekan tombol 'Back' kembali ke index.html
-            window.location.replace('welcome.html');
-        }
-    </script>
     
     <link rel="icon" href="./favicon/favicon.ico" sizes="any">
     <link rel="manifest" href="./favicon/site.webmanifest">
